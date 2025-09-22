@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 data_points = "Labs/Laboration-2/datapoints.txt"
 test_points = "Labs/Laboration-2/testpoints.txt"
@@ -12,8 +13,8 @@ def load_data_points(data_points):
         next(file)
         for line in file:
 
-            row = [p.strip() for p in line.strip().split(",") if p.strip() != ""]
-            x, y, label = row
+            line = line.strip().split(",")
+            x, y, label = line
             
             points.append((float(x), float(y), int(label)))
     return points
@@ -29,10 +30,10 @@ def load_test_points(test_points):
         for line in file:
             
             line = line.strip()
-            row = line.split("(")[1].strip(")").split(",")
-            x, y = row
+            line = line.split("(")[1].strip(")").split(",")
+            x, y = line
             points.append((float(x), float(y)))
     return points
 
 train_points = load_test_points(test_points)
-print(train_points)
+print(train_points[0])
