@@ -12,11 +12,21 @@ def load_data_points(path):
     with open(path, "r") as file:
         next(file)
         for line in file:
+            try:
+                line = line.strip().split(",")
+                x, y, label = line
 
-            line = line.strip().split(",")
-            x, y, label = line
+                x = float(x)
+                y = float(y)
+                label = int(label)
+
+                if x < 0 or y < 0:
+                    raise ValueError(f"Negative number found on line {line}")
             
-            points.append((float(x), float(y), int(label)))
+                points.append((float(x), float(y), int(label)))                
+            except ValueError:
+                print(f"Error on line {line}: {ValueError}")
+
     return points
 
 def load_test_points(path):
@@ -26,11 +36,21 @@ def load_test_points(path):
     with open(path, "r") as file:
         next(file)
         for line in file:
+            try:    
+                line = line.strip()
+                line = line.split("(")[1].strip(")").split(",")
+                x, y = line
+
+                x = float(x)
+                y = float(y)
+
+                if x < 0 or y < 0:
+                    raise ValueError(f"Negative number found on line {line}")
             
-            line = line.strip()
-            line = line.split("(")[1].strip(")").split(",")
-            x, y = line
-            points.append((float(x), float(y)))
+                points.append((float(x), float(y)))
+            except ValueError:
+                print(f"Error on line {line}: {ValueError}")
+
     return points
 
 def euclidean_distance(p1, p2):
@@ -40,19 +60,35 @@ def euclidean_distance(p1, p2):
 def classification_1NN(test_point, training_data):
     closest_label = None
     minimum_dist = float("inf")
-    for x, y , label in training_data:
+    for x, y, label in training_data:
         d = euclidean_distance(test_point, (x, y))
         if d < minimum_dist:
             minimum_dist = d
             closest_label = label
     return closest_label
-    
+
+def get_first(tup):
+    return tup[0]
+
+def classification_kNN(test_point, training_data, k=10):
+    distances = []
+    for x, y, label in training_data:
+        distance = euclidean_distance(test_point, (x, y))
+        distances.append((distance, label))
+
+    sorted_distances = sorted(distances, key=get_first)
+    k_nearest = sorted_distances[:k]
+    neighbor_labels = [label for _, label in k_nearest]
+
+    most_common = max(set(neighbor_labels), key=neighbor_labels.count)
+    return most_common
+
 def plot_data(training_data, test_results):
     for x, y, label in training_data:
             plt.scatter(x, y, color="blue" if label == 0 else "orange")
     for x, y, label in test_results:
             plt.scatter(x, y, color="red" if label == 0 else "green", marker="x", s=100)
-
+    
     plt.title("Pikachu vs Pichu with 1-NN")
     plt.xlabel("Width (cm)")
     plt.ylabel("Height (cm)")
@@ -61,6 +97,7 @@ def plot_data(training_data, test_results):
     plt.text(16.5, 39, "Pichu = Blue", fontsize=10)
     plt.text(16.5, 38, "Test point identified Pichu = Red", fontsize=8)
     plt.text(16.5, 37.5, "Test point identified Pikachu = Green", fontsize=8)
+    
     plt.show()
 
 def main():
