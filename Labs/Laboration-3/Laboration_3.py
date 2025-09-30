@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv("Labs/Laboration 3/unlabelled_data.csv", names=["x", "y"])
+data = pd.read_csv("Labs/Laboration-3/unlabelled_data.csv", names=["x", "y"])
 
 x = data["x"].values
 y = data["y"].values
@@ -17,7 +17,7 @@ def classify_point(x, y):
     return y > line(x)
 
 data["label"] = [int(classify_point(x[i], y[i])) for i in range(len(x))]
-data.to_csv("Labs/Laboration 3/labelled_data.csv", index = False, header = False)
+data.to_csv("Labs/Laboration-3/labelled_data.csv", index = False, header = False)
 
 colors = ["green" if c == 1 else "blue" for c in data["label"]]
 x_vals = np.array([data["x"].min(), data["x"].max()])
