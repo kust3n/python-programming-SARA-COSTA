@@ -5,6 +5,7 @@ import numpy as np
 #Läser in data
 data = pd.read_csv("Labs/Laboration-3/unlabelled_data.csv", names=["x", "y"])
 
+# Extraherar x- och y-koordinater
 x = data["x"].values
 y = data["y"].values
 
